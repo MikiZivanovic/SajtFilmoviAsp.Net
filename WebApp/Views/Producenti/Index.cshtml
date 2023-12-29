@@ -1,0 +1,58 @@
+﻿
+@model IEnumerable<Producent>
+
+
+
+@{
+
+
+}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <table class="table">
+            <thead>
+                <tr class="text-center">
+                    <td>Profilna slika</td>
+                    <td>Ime i Prezime</td>
+                    <td>Biografija</td>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <td>Akcije</td>
+                    }
+                    
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var producent in Model)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            <img class="rounded-circle" src="@producent.UrlSlike" alt="@producent.PunoIme" style="max-width:150px">
+                        </td>
+
+                        <td class="align-middle">@producent.PunoIme</td>
+                        <td class="align-middle">@producent.Biografija</td>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <td class="align-middle">
+                                <a asp-controller="Producenti" asp-action="Edit" asp-route-id="@producent.Id" class="btn btn-outline-primary"> <i class="bi bi-pencil-square"></i>Edit</a>
+                                <a asp-controller="Producenti" asp-action="Details" asp-route-id="@producent.Id" class="btn btn-outline-primary"> <i class="bi bi-eye"></i>Details</a>
+                                <a asp-controller="Producenti" asp-action="Delete" asp-route-id="@producent.Id" class="btn btn-outline-primary"> <i class="bi bi-trash"></i>Delete</a>
+
+                            </td>
+                        }
+                    </tr>
+
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    
+@await Html.PartialAsync("_DugmeDodaj", "Producenti") 
+}

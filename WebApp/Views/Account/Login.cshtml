@@ -1,0 +1,40 @@
+﻿@using WebApp.Data.ViewModels;
+@model LogInVM;
+
+@{
+    ViewData["Title"] = "Uloguj se na nalog";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <p>
+            <h4>Uloguj se na svoj nalog</h4>
+        </p>
+
+      
+
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Login">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label  class="control-label"></label>
+                        <input asp-for="ImejlAdresa" class="form-control" />
+                        <span asp-validation-for="ImejlAdresa" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label"></label>
+                        <input asp-for="Sifra" class="form-control" />
+                        <span asp-validation-for="Sifra" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="btn btn-outline-success float-right" type="submit" value="Log in" />
+                        <a class="btn btn-outline-secondary" asp-controller="Filmovi" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

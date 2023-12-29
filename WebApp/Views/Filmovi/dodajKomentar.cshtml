@@ -1,0 +1,59 @@
+﻿@using WebApp.Data.ViewModels
+@model DodajKomentarVM
+
+
+
+<div class="row text">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h1>Dodaj novi komentar</h1>
+        </p>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-controller="Filmovi" asp-action="dodajKomentar">
+              
+                    <div class="form-group mb-4">
+                        <label>Tvoj rejting filma</label>
+                        <span class="text-warning float-right">
+                            <i class="rejtingZvezda fa-regular fa-star" data-value="1"></i>
+                            <i class="rejtingZvezda fa-regular fa-star" data-value="2"></i>
+                            <i class="rejtingZvezda fa-regular fa-star" data-value="3"></i>
+                            <i class="rejtingZvezda fa-regular fa-star" data-value="4"></i>
+                            <i class="rejtingZvezda fa-regular fa-star" data-value="5"></i>
+                        </span>
+                    </div>
+                    <input type="hidden" asp-for="Rejting" name="Rejting" id="vrednostRejtinga"/>
+                    <div class="form-group mb-4">
+
+                        <textarea class="form-control" asp-for="Text" rows="3"></textarea>
+                    </div>
+                    <div class="form-group mb-4">
+                        <input type="hidden" asp-for="FilmId" />
+                        <input type="hidden" asp-for="UserId" /> 
+                        <input type="submit" value="Dodaj Komentar" class="btn btn-outline-success float-right" />
+                        <a class="btn btn-outline-secondary" asp-controller="Filmovi" asp-action="Details">Prikazi sve</a>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(".rejtingZvezda").hover(function () {
+            $(".rejtingZvezda").addClass("fa-regular").removeClass("fa-solid");
+            $(this).addClass("fa-solid").removeClass("fa-regular");
+            $(this).prevAll(".rejtingZvezda").addClass("fa-solid").removeClass("fa-regular");
+
+        });
+        $(".rejtingZvezda").click(function () {
+            
+            var vrednost = $(this).attr("data-value");
+            $("#vrednostRejtinga").val(vrednost);
+
+        });
+
+
+    </script>
+}

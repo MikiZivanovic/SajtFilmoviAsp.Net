@@ -1,0 +1,55 @@
+﻿@using WebApp.Data.ViewModels;
+@model RegistracijaVM;
+
+@{
+    ViewData["Title"] = "Registruje se na sajt";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <p>
+            <h4>Registruj svoj nalog</h4>
+        </p>
+
+
+
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Registracija">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label class="control-label">Ime i Prezime</label>
+                        <input asp-for="PunoIme" class="form-control" />
+                        <span asp-validation-for="PunoIme" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Godine</label>
+                        <input asp-for="Godine" class="form-control" />
+                        <span asp-validation-for="Godine" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Imejl adresa</label>
+                        <input asp-for="ImejlAdresa" class="form-control" />
+                        <span asp-validation-for="ImejlAdresa" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Sifra</label>
+                        <input asp-for="Sifra" class="form-control" />
+                        <span asp-validation-for="Sifra" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Resifra</label>
+                        <input asp-for="PotvrdaSifre" class="form-control" />
+                        <span asp-validation-for="PotvrdaSifre" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="btn btn-outline-success float-right" type="submit" value="Registruj se" />
+                        <a class="btn btn-outline-secondary" asp-controller="Filmovi" asp-action="Index">Povratak nazad</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

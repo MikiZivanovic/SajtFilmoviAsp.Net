@@ -1,0 +1,108 @@
+﻿@model DodajFilmVM
+
+@using WebApp.Data.ViewModels;
+
+@{
+    ViewData["Title"] = "Izmeni film";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h4>Izmeni film</h4>
+        </p>
+
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-4">
+                                <label>Naziv</label>
+                                <input asp-for="Ime" class="form-control" />
+                                <span asp-validation-for="Ime" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label>DatumPocetka</label>
+                                <input asp-for="DatumPocetka" type="date" class="form-control" />
+                                <span asp-validation-for="DatumPocetka" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label>DatumZavrsetka</label>
+                                <input asp-for="DatumZavrsetka" type="date" class="form-control" />
+                                <span asp-validation-for="DatumZavrsetka" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label>Cena</label>
+                                <input asp-for="Cena" type="number" class="form-control" />
+                                <span asp-validation-for="Cena" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label>UrlSlike</label>
+                                <input asp-for="UrlSlike" class="form-control" />
+                                <span asp-validation-for="UrlSlike" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-4">
+                                <label>BioskopId</label>
+                                <select asp-for="BioskopId" class="form-control" asp-items="@ViewBag.Bioskopi"></select>
+                                <span asp-validation-for="BioskopId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label>KategorijaFilma</label>
+                                <select asp-for="KategorijaFilma" class="form-control" asp-items="Html.GetEnumSelectList<WebApp.Data.KategorijaFilma>()"></select>
+                                <span asp-validation-for="KategorijaFilma" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label>ProducentId</label>
+                                <select asp-for="ProducentId" class="form-control" asp-items="@ViewBag.Producenti"></select>
+                                <span asp-validation-for="ProducentId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label>GlumciIdijevi</label>
+                                <select asp-for="GlumciIdijevi" class="form-control" asp-items="@ViewBag.Glumci" multiple></select>
+                                <span asp-validation-for="GlumciIdijevi" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group mb-4">
+                                <label>Opis</label>
+                                <textarea asp-for="Opis" class="form-control"></textarea>
+                                <span asp-validation-for="Opis" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 offset-4 text-center">
+                        <img width="100%" id="slikaPrikaz" />
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <input type="submit" value="Edit" class="btn btn-outline-success float-right" />
+                        <a class="btn btn-outline-secondary" asp-action="Index">Prikazi sve</a>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var slika = document.getElementById('slikaPrikaz');
+            slika.src = document.getElementById('UrlSlike').value;
+        });
+
+        document.querySelector("#UrlSlike").addEventListener("change", function () {
+            var slika = document.getElementById("slikaPrikaz");
+            slika.src = $(this).val();
+        })
+    </script>
+}

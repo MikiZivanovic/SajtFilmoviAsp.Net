@@ -1,0 +1,56 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject UserManager<WebApp.Models.ApplicatonUser> UserManager;
+
+@{
+    WebApp.Data.AppDbContext context = new WebApp.Data.AppDbContext();
+    WebApp.Data.UnitOfWork.IUnitOfWork unitOfWork = new WebApp.Data.UnitOfWork.UnitOfWork(context);
+    List<WebApp.Data.GrafikKlasa> elementi = new List<WebApp.Data.GrafikKlasa>();
+    var komentars = unitOfWork.IKomentarRepository.GetAll().ToList();
+
+    foreach (WebApp.Models.Komentar k in komentars)
+    {
+        WebApp.Data.GrafikKlasa g = new WebApp.Data.GrafikKlasa();
+        g.Recenzija = k.Rejting;
+        g.Godina = k.User.Godine;
+        elementi.Add(g);
+    
+    }
+
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izvestaj o rejtinzima filmova</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            var dataRows = @Html.Raw(Json.Serialize(elementi.Select(e => new object[] { e.Godina, e.Recenzija })));
+
+
+            var data = [['Godine', 'Recenzija']].concat(dataRows);
+
+            var options = {
+                title: 'Izvestaj rejtinga filmova po godinama usera',
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(google.visualization.arrayToDataTable(data), options);
+
+
+        }
+    </script>
+</head>
+<body>
+    <div id="curve_chart" style="margin:200px auto; width:1500px; height:800px;"> </div>
+
+
+</body>
+

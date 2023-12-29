@@ -1,0 +1,241 @@
+﻿@model Film
+
+<div class="row" >
+    <div class="col-md-8 offset-2">
+        <div class="card mb-12">
+            <div class="row g-0">
+                <div class="col-md-12">
+                    <div class="card-header text-white bg-info">
+                        <h5 class="card-title">@Model.Ime</h5>
+                        @{
+                            List<int> listaODobrenih = new List<int>();
+                            List<int> listaNeodobrenih = new List<int>();
+                            WebApp.Data.AppDbContext context = new WebApp.Data.AppDbContext();
+                            WebApp.Data.UnitOfWork.IUnitOfWork un = new WebApp.Data.UnitOfWork.UnitOfWork(context);
+                            var lisitaidijeva = un.IKomentar_FIlmRepository.GetAll().Where(k => k.FilmId == Model.Id).Select(k => k.KomentarId).ToList();
+                            int duzina = 0;
+                            int suma = 0;
+                            foreach (int s in lisitaidijeva)
+
+                            {
+                                Komentar p = un.IKomentarRepository.GetById(s);
+                                duzina = duzina + 1;
+                                suma = suma + p.Rejting;
+
+                            }
+
+                            int vrednost = (duzina==0)?0:(suma/duzina);
+                            int maxZv = 5;
+                            foreach (int id in lisitaidijeva)
+
+                            {
+                                Komentar k = un.IKomentarRepository.GetById(id);
+                                if (k.Odobren == false)
+                                {
+
+                                    listaNeodobrenih.Add(id);
+
+                                }
+                                else
+
+                                {
+                                    listaODobrenih.Add(id);
+                                }
+
+                            }
+                        }
+
+                        <span class="text-warning card-body p-4 d-flex justify-content-end">
+                            @for (int i = 1; i <= vrednost; i++)
+                            {
+                                <i class="rejtingZvezda fa-solid fa-star"></i>
+                            }
+                            @for (int i = 1; i <= maxZv - vrednost; i++)
+                            {
+                                <i class="rejtingZvezda fa-regular fa-star"></i>
+                            }
+                        </span>
+                    </div>
+                   
+                </div>
+                <div class="col-md-4">
+                    <img src="@Model.UrlSlike" class="img-fluid" alt="@Model.Ime">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-text">@Model.Opis</p>
+                        <p class="card-text">
+                            <b>Bioskop: </b>
+                            <a asp-controller="Bioskopi" asp-action="Details" asp-route-id="@Model.Bioskop.Id">@Model.Bioskop.Ime</a>
+                        </p>
+                        <p class="card-text">
+                            <b>Producent: </b>
+                            <a asp-controller="Producenti" asp-action="Details" asp-route-id="@Model.Producent.Id">@Model.Producent.PunoIme</a>
+                        </p>
+                        <p class="card-text"><b>Kategorija: </b>@Model.KategorijaFilma</p>
+                        <p class="card-text"><b>Datum Pocetka: </b>@Model.DatumPocetka.ToString("dd MM yyyy")</p>
+                        <p class="card-text"><b>Datum Zavrsetka: </b>@Model.DatumZavrsetka.ToString("dd MM yyyy")</p>
+                        <p class="card-text">
+                            <b>Status: </b>
+                            @if (DateTime.Now >= Model.DatumPocetka && DateTime.Now <= Model.DatumZavrsetka)
+                            {
+                                <span class="badge bg-success text-white">DOSTUPAN</span>
+                            }
+                            else if (DateTime.Now > Model.DatumZavrsetka)
+                            {
+                                <span class="badge bg-danger text-white">ISTEKAO</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-primary text-white">USKORO</span>
+                            }
+                        </p>
+                        <p class="card-text">
+                            <b>Actors: </b>
+                            <hr />
+                            <div class="row">
+                                @foreach (var glumac in Model.Glumci_Filmovi)
+                                {
+                                    <div class="column text-center">
+                                        <img class="border-info rounded-circle" src="@glumac.Glumac.UrlSlike" style="max-width: 150px" />
+                                        <br />
+                                        <a asp-controller="Glumci" asp-action="Details" asp-route-id="@glumac.GlumacId">@glumac.Glumac.PunoIme</a>
+                                    </div>
+                                }
+                            </div>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-footer">
+                        <p class="card-text">
+                            <a asp-controller="Filmovi" asp-action="Index" class="btn btn-outline-primary float-right">Svi filmovi</a>
+                            
+                           
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <section class="bg-light py-5">
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-12 col-lg-10">
+                    <div class="card text-dark">
+                        <h4 class="mb-0"><b>Neodobreni komentari</b></h4>
+                        <hr>
+                        <p class="fw-light mb-4 pb-2"></p>
+                       
+                        @foreach (int id in listaNeodobrenih)
+                        {
+                            Komentar k = un.IKomentarRepository.GetById(id);
+                            int maxBrojZvezda = 5;
+                            <div class="card-body p-4">
+                                <span class="text-warning card-body p-4 d-flex justify-content-end">
+                                    @for (int i = 1; i <= k.Rejting; i++)
+                                    {
+                                        <i class="rejtingZvezda fa-solid fa-star"></i>
+                                    }
+                                    @for (int i = 1; i <= maxBrojZvezda - k.Rejting; i++)
+                                    {
+                                        <i class="rejtingZvezda fa-regular fa-star"></i>
+                                    }
+                                </span>
+                                
+
+                                <div class="d-flex flex-start">
+                                    <img class="rounded-circle shadow-1-strong me-3"
+                                         src="@k.User.UrlSlike" alt="avatar" width="60" height="60" />
+                                    <div>
+                                        <h6 class="fw-bold mb-1"><b>@k.User.PunoIme</b></h6>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <p class="mb-0">
+                                                @k.Vreme
+                                                <span class="badge bg-primary">Pending</span>
+                                            </p>
+                                        </div>
+                                        <p class="mb-0">
+                                            @k.Text
+                                        </p>
+                                            
+                                    </div>
+                                        <span class="text-warning card-body p-4 d-flex justify-content-end">
+                                            <form asp-controller="Filmovi" asp-action="odobriKomentar" asp-route-id="@id">
+
+                                                <input type="submit" value="Odobri komentar" class="btn btn-outline-success float-right" />
+
+                                            </form>
+                                        </span>
+                                    
+                                     
+                                </div>
+                            </div>
+                        }
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    }
+    <section class="bg-light py-5">
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-12 col-lg-10">
+                    <div class="card text-dark">
+                        <h4 class="mb-0"><b>Komentari</b></h4>
+                        <hr>
+                        <p class="fw-light mb-4 pb-2"></p>
+                        @{
+                          
+                        }
+                        @foreach (int id in listaODobrenih)
+                        {
+                            Komentar k = un.IKomentarRepository.GetById(id);
+                            int maxBrojZvezda = 5;
+                            <div class="card-body p-4">
+                                <span class="text-warning card-body p-4 d-flex justify-content-end">
+                                    @for (int i = 1; i <= k.Rejting; i++)
+                                    {
+                                        <i class="rejtingZvezda fa-solid fa-star"></i>
+                                    }
+                                    @for (int i = 1; i <= maxBrojZvezda - k.Rejting; i++)
+                                    {
+                                        <i class="rejtingZvezda fa-regular fa-star"></i>
+                                    }
+                                </span>
+                                <div class="d-flex flex-start">
+                                    <img class="rounded-circle shadow-1-strong me-3"
+                                         src="@k.User.UrlSlike" alt="avatar" width="60" height="60" />
+                                    <div>
+                                        <h6 class="fw-bold mb-1"><b>@k.User.PunoIme</b></h6>
+                                        <div class="d-flex align-items-center mb-3">
+                                            <p class="mb-0">
+                                                @k.Vreme
+                                                <span class="badge bg-primary">Pending</span>
+                                            </p>
+                                        </div>
+                                        <p class="mb-0">
+                                            @k.Text
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@if (User.Identity.IsAuthenticated)
+{
+    <div style="position:fixed; right:50px; bottom:50px;">
+        <a asp-controller="Filmovi" asp-action="dodajKomentar" asp-route-id="@Model.Id" class="btn btn-success text-white">
+            <i class="bi bi-person"></i> Dodaj Komentar
+        </a>
+    </div>
+}

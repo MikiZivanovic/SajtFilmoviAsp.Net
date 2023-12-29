@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Bioskop>
+
+
+
+@{
+
+
+}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <table class="table">
+            <thead>
+                <tr class="text-center">
+                    <td>Profilna slika</td>
+                    <td>Ime i Prezime</td>
+                    <td>Biografija</td>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <td>Akcije</td>
+                    }
+                    
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var bioskop in Model)
+                {
+                    <tr>
+                        <td class="align-middle">
+                            <img class="rounded-circle" src="@bioskop.Logo" alt="@bioskop.Ime" style="max-width:150px">
+                        </td>
+
+                        <td class="align-middle">@bioskop.Ime</td>
+                        <td class="align-middle">@bioskop.Opis</td>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                             <td class="align-middle">
+                            <a asp-controller="Bioskopi" asp-action="Edit" asp-route-id="@bioskop.Id" class="btn btn-outline-primary"> <i class="bi bi-pencil-square"></i>Edit</a>
+                            <a asp-controller="Bioskopi" asp-action="Details" asp-route-id="@bioskop.Id" class="btn btn-outline-primary"> <i class="bi bi-eye"></i>Details</a>
+                            <a asp-controller="Bioskopi" asp-action="Delete" asp-route-id="@bioskop.Id" class="btn btn-outline-primary"> <i class="bi bi-trash"></i>Delete</a>
+
+                        </td>
+                        }
+                       
+
+                    </tr>
+
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+</div>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    @await Html.PartialAsync("_DugmeDodaj", "Bioskopi") 
+}
